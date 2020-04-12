@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+</head>
+<body>
+<p style="color: red; font-size: 18px;">上传大小限制：300M</p>
+
+<h3>文件上传</h3>
+<form method="POST" action="/upload" enctype="multipart/form-data">
+    <input type="file" name="file"/><br/><br/>
+    文件夹名称：<input type="text" name="folder" value="upload"/><br/><br/>
+    <input type="submit" value="Submit"/>
+</form>
+<hr>
+
+<h3>多文件上传</h3>
+<form method="POST" action="/uploadMore" enctype="multipart/form-data">
+    <input type="file" name="file" multiple="multiple"/><br/><br/>
+    文件夹名称：<input type="text" name="folder" value="uploadFile"/><br/><br/>
+    <input type="submit" value="Submit"/>
+</form>
+<hr>
+
+<h3>图片上传 - 压缩</h3>
+<form method="POST" action="/uploadByThumbnail" enctype="multipart/form-data">
+    <input type="file" name="file" multiple="multiple"/><br/><br/>
+    文件夹名称：<input type="text" name="folder" value="uploadByThumbnail"/><br/><br/>
+    是否保存原图：<input type="radio" name="saveOld" value="true" checked>是</label>
+    <input type="radio" name="saveOld" value="false">否</label>
+    <br/><br/>
+    <input type="submit" value="Submit"/>
+</form>
+
+</body>
+</html>
