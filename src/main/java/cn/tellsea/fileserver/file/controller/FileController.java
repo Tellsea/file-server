@@ -6,10 +6,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 文件 控制器
@@ -53,9 +56,15 @@ public class FileController {
     }
 
     @ApiOperation("生成二维码")
-    @RequestMapping("/createQrCode")
+    @PostMapping("/createQrCode")
     public ResponseResult createQrCode(@RequestParam(value = "content", defaultValue = "默认二维码内容")String content,
                                        @RequestParam(value = "folder", defaultValue = "default") String folder) {
         return ResponseResult.success(fileService.createQrCode(content, folder));
+    }
+
+    @ApiOperation("下载文件")
+    @PostMapping("downloadFile")
+    public void downloadFile(String filePath, String fileName, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+        fileService.downloadFile(filePath, fileName, request, response);
     }
 }

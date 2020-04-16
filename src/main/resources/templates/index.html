@@ -3,35 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <title>index</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .box {
+            width: 20%;
+            padding: 20px;
+            float: left;
+        }
+    </style>
 </head>
 <body>
-<p style="color: red; font-size: 18px;">上传大小限制：300M</p>
+<div style="width: 100%;">
+    <div class="box">
+        <h2>html上传</h2>
+        <h3>文件上传</h3>
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="file"/><br/><br/>
+            文件夹名称：<input type="text" name="folder" value="upload"/><br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
+        <hr>
 
-<h3>文件上传</h3>
-<form method="POST" action="/upload" enctype="multipart/form-data">
-    <input type="file" name="file"/><br/><br/>
-    文件夹名称：<input type="text" name="folder" value="upload"/><br/><br/>
-    <input type="submit" value="Submit"/>
-</form>
-<hr>
+        <h3>多文件上传</h3>
+        <form method="POST" action="/uploadMore" enctype="multipart/form-data">
+            <input type="file" name="file" multiple="multiple"/><br/><br/>
+            文件夹名称：<input type="text" name="folder" value="uploadFile"/><br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
+        <hr>
 
-<h3>多文件上传</h3>
-<form method="POST" action="/uploadMore" enctype="multipart/form-data">
-    <input type="file" name="file" multiple="multiple"/><br/><br/>
-    文件夹名称：<input type="text" name="folder" value="uploadFile"/><br/><br/>
-    <input type="submit" value="Submit"/>
-</form>
-<hr>
+        <h3>图片上传 - 压缩</h3>
+        <form method="POST" action="/uploadByThumbnail" enctype="multipart/form-data">
+            <input type="file" name="file" multiple="multiple"/><br/><br/>
+            文件夹名称：<input type="text" name="folder" value="uploadByThumbnail"/><br/><br/>
+            是否保存原图：<input type="radio" name="saveOld" value="true" checked>是</label>
+            <input type="radio" name="saveOld" value="false">否</label>
+            <br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
+    </div>
 
-<h3>图片上传 - 压缩</h3>
-<form method="POST" action="/uploadByThumbnail" enctype="multipart/form-data">
-    <input type="file" name="file" multiple="multiple"/><br/><br/>
-    文件夹名称：<input type="text" name="folder" value="uploadByThumbnail"/><br/><br/>
-    是否保存原图：<input type="radio" name="saveOld" value="true" checked>是</label>
-    <input type="radio" name="saveOld" value="false">否</label>
-    <br/><br/>
-    <input type="submit" value="Submit"/>
-</form>
+    <div class="box">
+        <h2>ajax上传</h2>
+        <h3>FormData上传</h3>
+        <input type="file" name="file" id="formDataUpload"/><br/><br/>
+        文件夹名称：<input type="text" name="folder" value="ajax" id="formDataFolder"/><br/><br/>
+        <input type="button" value="Submit" id="formDataButton"/>
+        <hr>
+    </div>
 
+    <div class="box">
+        <h2>其他</h2>
+        <h3>将指定文件夹打包为zip</h3>
+        <form method="POST" action="/folderToZip">
+            待压缩的文件路径：<input type="text" name="folderPath" /><br/><br/>
+            压缩后存放路径：<input type="text" name="zipPath"/><br/><br/>
+            压缩后文件的名称：<input type="text" name="fileName"/><br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
+        <hr>
+        <h3>生成二维码</h3>
+        <form method="POST" action="/createQrCode">
+            文件夹名称：<input type="text" name="folder" value="upload"/><br/><br/>
+            二维码内容：<input type="text" name="content" value="qrcode"/><br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
+    </div>
+
+    <div class="box">
+        <h2>下载</h2>
+        <h3>下载文件</h3>
+        <form method="POST" action="/downloadFile">
+            文件路径：<input type="text" name="filePath" value="/default/2020/04/12/1fee42a4-f902-488b-87c6-ca82ea6bc958.jpg"/><br/><br/>
+            下载名称：<input type="text" name="fileName" value="我是下载文件的名字.jpg"/><br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
+        <h2>说明</h2>
+        <ul>
+            <li>上传大小限制：默认300M</li>
+            <li>html上传实际中并不多用，ajax居多</li>
+            <li>每个请求上传后台都会返回访问路径，多文件则用“,”分隔开</li>
+            <li>资源访问前缀：http://localhost:9000/file-static</li>
+            <li><a href="https://github.com/Tellsea/file-server" target="_blank">有用的话Star一下吧</a></li>
+        </ul>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    $('#formDataButton').on('click', function () {
+        var formData = new FormData();
+        formData.append("file", $('#formDataUpload')[0].files[0]);
+        formData.append("folder", $.trim($('#formDataFolder').val()));
+        $.ajax({
+            url: '/upload',
+            dataType: 'json',
+            type: 'POST',
+            data: formData,
+            processData: false, // 使数据不做处理
+            contentType: false, // 不要设置Content-Type请求头
+            success: function (res) {
+                console.log(res);
+                if (res.code == 200) {
+                    alert("上传成功");
+                } else {
+                    alert("上传失败");
+                }
+            },
+            error: function (res) {
+                console.log(res);
+            }
+        });
+    });
+</script>
 </body>
 </html>

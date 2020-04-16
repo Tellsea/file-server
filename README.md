@@ -4,11 +4,18 @@
 
 ### 文件操作
 
-- 文件上传
-- 文件批量上传
-- 图片根据比例压缩上传
-- 将指定文件夹打包为zip
-- 生成二维码
-- ...
+- html上传：文件上传
+- html上传：多文件上传
+- html上传：图片上传 - 压缩
+- ajax上传：FormData上传
+- 其他：将指定文件夹打包为zip
+- 其他：生成二维码
+- 下载文件
 
 通过案例，让自己对于文件的操作更加的了解，以及工作中使用起来更加的方便。
+
+### 预览
+
+![在这里插入图片描述](https://github.com/Tellsea/file-server/blob/master/doc/images/index.png)
+
+![在这里插入图片描述](https://github.com/Tellsea/file-server/blob/master/doc/images/swagger.png)

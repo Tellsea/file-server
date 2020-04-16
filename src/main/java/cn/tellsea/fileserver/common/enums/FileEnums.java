@@ -17,6 +17,8 @@ public enum FileEnums implements BaseEnums {
     SAVE_ERROR(500, "文件保存错误"),
     THUMBNAILS_ERROR(500, "图片压缩错误"),
     FILE_ZIP_ERROR(500, "文件打包zip错误"),
+    DOWNLOAD_ERROR(500, "下载文件错误"),
+    DOWNLOAD_NOT_FOUND_ERROR(500, "下载文件错误，未找到文件"),
     QRCODE_CREATE_ERROR(500, "二维码生成错误"),
     SERVER_ERROR(500, "服务器错误，请稍后重试"),
     ;

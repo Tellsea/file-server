@@ -10,12 +10,12 @@ spring:
 # sunday
 sunday:
   swagger:
-    title: 接口文档
+    title: 鎺ュ彛鏂囨。
     enabled: true
     version: 1.0
     author: tellsea
     url: https://github.com/tellsea
     email: 3210054449@qq.com
-    description: 更多项目：https://github.com/tellsea
+    description: 鏇村椤圭洰锛歨ttps://github.com/tellsea
     terms-of-service-url: https://www.apache.org/licenses/LICENSE-2.0.html
     controller-url: cn.tellsea.fileserver.file.controller
