@@ -23,4 +23,6 @@ public interface FilePathConst {
     String SEPARATOR = ",";
 
     String THUMBNAIL_SUFFIX = "_thumbnail";
+
+    String THUMBNAIL_SEPARATOR = "|";
 }

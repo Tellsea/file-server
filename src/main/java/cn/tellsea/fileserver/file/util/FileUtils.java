@@ -10,8 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,6 +88,8 @@ public class FileUtils {
                         .concat(FilePathConst.THUMBNAIL_SUFFIX)
                         .concat(fileInfo.getFileType());
                 toFile = new File(path);
+                String newFilePath = fileInfo.getDatePath().concat(fileInfo.getFileName()).concat(FilePathConst.THUMBNAIL_SUFFIX).concat(fileInfo.getFileType());
+                fileInfo.setRelativePath(fileInfo.getRelativePath().concat(FilePathConst.THUMBNAIL_SEPARATOR) + newFilePath);
             } else {
                 toFile = new File(fileInfo.getDestFile());
             }
@@ -265,21 +270,58 @@ public class FileUtils {
     }
 
     /**
-     * 将InputStream写入到File中
+     * 下载文件
      *
-     * @param ins
-     * @param file
-     * @throws IOException
+     * @param filePath 访问路径
+     * @param fileName 下载文件名
+     * @param request
+     * @param response
      */
-    public void inputstreamtofile(InputStream ins, File file) throws IOException {
-        OutputStream os = new FileOutputStream(file);
-        int bytesRead = 0;
-        byte[] buffer = new byte[8192];
-        while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
-            os.write(buffer, 0, bytesRead);
+    public static void download(String filePath, String fileName, HttpServletRequest request, HttpServletResponse response) {
+        File file = new File(FilePathConst.SAVE_POSITION + filePath);
+        if (file.exists()) {
+            response.setHeader("content-type", "application/octet-stream");
+            response.setContentType("application/octet-stream");
+            // 下载文件能正常显示中文
+            try {
+                response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            // 实现文件下载
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            try {
+                fis = new FileInputStream(file);
+                bis = new BufferedInputStream(fis);
+                OutputStream os = response.getOutputStream();
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer, 0, i);
+                    i = bis.read(buffer);
+                }
+            } catch (Exception e) {
+                throw new FileSaveException(FileEnums.DOWNLOAD_ERROR.getInfo());
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            throw new FileSaveException(FileEnums.DOWNLOAD_NOT_FOUND_ERROR.getInfo());
         }
-        os.close();
-        ins.close();
     }
 
     public static void main(String[] args) {
